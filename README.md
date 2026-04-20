@@ -1,5 +1,7 @@
 # LESS: Selecting Influential Data for Targeted Instruction Tuning
 
+test
+
 This repo contains the code for our ICML 2024  paper [LESS: Selecting Influential Data for Targeted Instruction Tuning](https://arxiv.org/abs/2402.04333). In this work, we propose a data selection method to select influential data to induce a target capability.
 
 ## 🔗 Quick Links
