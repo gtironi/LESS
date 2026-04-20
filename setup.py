@@ -1,14 +1,8 @@
 import io
 from setuptools import setup, find_packages 
 import pathlib
-import pkg_resources
-
-with pathlib.Path('requirement.txt').open() as requirements_txt:
-    install_requires = [
-        str(requirement)
-        for requirement
-        in pkg_resources.parse_requirements(requirements_txt)
-    ]
+with pathlib.Path('requirement.txt').open() as f:
+    install_requires = [line.strip() for line in f if line.strip() and not line.startswith('#')]
 
 
 setup(

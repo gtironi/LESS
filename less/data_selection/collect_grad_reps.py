@@ -204,14 +204,19 @@ def collect_grads(dataloader,
     # initialize a project for each target projector dimension
     projectors = []
     for dim in proj_dim:
-        proj = projector(grad_dim=number_of_params,
-                         proj_dim=dim,
-                         seed=0,
-                         proj_type=ProjectionType.rademacher,
-                         device=device,
-                         dtype=dtype,
-                         block_size=block_size,
-                         max_batch_size=projector_batch_size)
+        kwargs = {
+            'grad_dim': number_of_params,
+            'proj_dim': dim,
+            'seed': 0,
+            'proj_type': ProjectionType.rademacher,
+            'device': device,
+            'dtype': dtype,
+            'block_size': block_size,
+        }
+        if projector.__name__ == 'CudaProjector':
+            kwargs['max_batch_size'] = projector_batch_size
+        
+        proj = projector(**kwargs)
         projectors.append(proj)
 
     count = 0

@@ -125,9 +125,18 @@ if isinstance(model, PeftModel):
 
 adam_optimizer_state = None
 if args.info_type == "grads" and args.gradient_type == "adam":
-    optimizer_path = os.path.join(args.model_path, "optimizer.bin")
-    adam_optimizer_state = torch.load(
-        optimizer_path, map_location="cpu")["state"]
+    optimizer_path = os.path.join(args.model_path, "optimizer.pt")
+    if not os.path.exists(optimizer_path):
+        optimizer_path = os.path.join(args.model_path, "optimizer.bin")
+    
+    raw_state = torch.load(optimizer_path, map_location="cpu")
+    opt_state = raw_state["state"]
+    
+    if len(opt_state) > 0 and isinstance(list(opt_state.keys())[0], int):
+        trainable_names = [n for n, p in model.named_parameters() if p.requires_grad]
+        adam_optimizer_state = {name: opt_state[i] for i, name in enumerate(trainable_names) if i in opt_state}
+    else:
+        adam_optimizer_state = opt_state
 
 if args.task is not None:
     dataset = get_dataset(args.task,
